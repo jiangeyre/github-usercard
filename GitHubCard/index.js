@@ -23,18 +23,6 @@ axios.get("https://api.github.com/users/jiangeyre")
     console.log(error);
   })
 
-// axios.get("https://api.github.com/users/jiangeyre/followers")
-//     .then(gitSuccessData => {
-//         console.log(gitSuccessData.data);
-//         gitSuccessData.data.forEach(follower => {
-//             gitAPICaller(`https://api.github.com/users/${follower.username}`, CreateCard);
-//         });
-//     })
-//     .catch(gitErrorData => {
-//       //    deal with error data
-//       console.log("There is an error with your API request");
-//   });
-
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
@@ -49,7 +37,24 @@ axios.get("https://api.github.com/users/jiangeyre")
           user, and adding that card to the DOM.
 */
 
-const followersArray = ['DustinG98', 'RobertDGordon', 'BryanKAdams', 'Godnoken', 'astubbings', 'JacobWashburn', 'toddmurphy', 'MarinaBaskova', 'dtauraso', 'cjrobinson831'1];
+const followersArray = [];
+
+axios.get("https://api.github.com/users/jiangeyre/followers").then(response => {
+  response.data.map(xxx => {
+    followersArray.push(xxx.login);
+  })
+})
+
+function passTheGit(arr){
+  arr.map(xxx => {
+    axios.get("https://api.github.com/users/" + xxx).then(response => {
+      const newGit = CreateCard(response.data);
+      cards.append(newGit);
+    })
+  })
+}
+
+
 
 const githubFollowersProfile = followersArray.map(xxx => {
   return `https://api.github.com/users/${xxx}`;
@@ -132,7 +137,9 @@ function CreateCard(obj){
   return cards;
 
 }
+setTimeout(passTheGit, 500, followersArray);
 
+/*'DustinG98', 'RobertDGordon', 'BryanKAdams', 'Godnoken', 'astubbings', 'JacobWashburn', 'toddmurphy', 'MarinaBaskova', 'dtauraso', 'cjrobinson831', 'Thestartofyou'*/
 
 /* List of LS Instructors Github username's: 
   tetondan
@@ -141,30 +148,3 @@ function CreateCard(obj){
   luishrd
   bigknell
 */
-
-// const gitAPICaller = (stringURL, elementCreator) => {
-// axios.get(stringURL)
-// .then(gitSuccessData => {
-// //    call CreateCard using the user info received from the github API
-// console.log(gitSuccessData.data);
-// elementCreator(gitSuccessData.data);
-//         })
-//         .catch(gitErrorData => {
-//             //    deal with error data
-//             console.log("there is an error with the github API call through axios");
-//         });
-// }
-
-// gitAPICaller("https://api.github.com/users/jiangeyre", CreateCard);
-
-// axios.get("https://api.github.com/users/jiangeyre/followers")
-//     .then(gitSuccessData => {
-//         console.log(gitSuccessData.data);
-//         gitSuccessData.data.forEach(follower => {
-//             gitAPICaller(`https://api.github.com/users/${follower.username}`, CreateCard);
-//         });
-//     })
-//     .catch(gitErrorData => {
-//         //    deal with error data
-//         console.log("There is an error with your API request");
-//     });
