@@ -10,7 +10,7 @@
    Skip to Step 3.
 */
 
-const cards = document.querySeletor(".cards");
+const cards = document.querySelector(".cards");
 
 axios.get("https://api.github.com/users/jiangeyre")
   .then(response => {
@@ -37,7 +37,22 @@ axios.get("https://api.github.com/users/jiangeyre")
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['DustinG98', 'RobertDGordon', 'BryanKAdams', 'Godnoken', 'astubbings', 'JacobWashburn', 'toddmurphy', 'MarinaBaskova'];
+
+const githubFollowersProfile = followersArray.map(xxx => {
+  return `https://api.github.com/users/${xxx}`;
+})
+
+githubFollowersProfile.forEach(xxx => {
+  axios.get(xxx)
+  .then(response => {
+    const data = response.data;
+    cards.append(CreateCard(data));
+  })
+  .catch(error => {
+    console.log(error);
+  });
+});
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -69,8 +84,8 @@ function CreateCard(obj){
     userLocation = document.createElement('p'),
     userProfile = document.createElement('p'),
     userLink = document.createElement('a'),
-    followers = document.createElement('p'),
-    following = document.createElement('p'),
+    followersPar = document.createElement('p'),
+    followingPar = document.createElement('p'),
     biography = document.createElement('p');
 
   card.appendChild(img);
@@ -79,8 +94,8 @@ function CreateCard(obj){
   cardInfo.appendChild(username);
   cardInfo.appendChild(userLocation);
   cardInfo.appendChild(userProfile);
-  cardInfo.appendChild(followers);
-  cardInfo.appendChild(following);
+  cardInfo.appendChild(followersPar);
+  cardInfo.appendChild(followingPar);
   cardInfo.appendChild(biography);
 
   userProfile.appendChild(userLink);
@@ -92,6 +107,16 @@ function CreateCard(obj){
 
   img.src = obj.avatar_url;
   nameH3.textContent = obj.name;
+  username.textContent = obj.login;
+  userLocation.textContent = `Location: ${obj.location}`;
+  userLink.setAttribute('href', obj.html_url);
+  followersPar.textContent = `Followers: ${obj.followers}`;
+  followingPar.textContent = `Following: ${obj.following}`;
+  biography.textContent = `Biography: ${obj.bio}`;
+
+  let cards = document.querySelector(".cards");
+  cards.appendChild(card);
+  return cards;
 
 }
 
